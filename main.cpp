@@ -299,11 +299,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///DirectX毎フレーム処理
 		///ここから↓↓↓
 
+		//グラフィックスコマンドの仕組みテストに出そう
+		//
+		//ざっくりとこういう仕組み↓
+		//コーディング(CPU)→
+		//API呼び出し(CPU)→
+		//ドローコール生成(CPU)→
+		//コマンドバッファ(コマンドを溜める領域)に詰まれる(CPU)→
+		//命令がパイプライン処理で実行される(GPU)→
+		//ディスプレイに実行される
 
+		//グラフィックスコマンドはGPUに実行させる
+		//次の順でコマンドリストに追加していく
+		////順番厳守!!
+		//1.バッグバッファを、描画出来る状態に切り替えるコマンド(リソースバリア1)
+		//2.バッグバッファを、描画先として指定するコマンド
+		//3.画面クリアコマンド
+		//4.描画コマンド
+		//5.描画後にバッファを幼児用の状態に戻すコマンド(リソースバリア2)
 
+		////リソースバリア1
+		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 
-
-
+		//1.リソースバリアで書き込み可能に変更
+		D3D12_RESOURCE_BARRIER barrierDesc{};
+		barrierDesc.Transition.pResource = backBuffers[bbIndex];				//バックバッファを指定
+		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;		//表示状態から
+		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;	//描画状態へ
+		commandList->ResourceBarrier(1, &barrierDesc);
 
 		///ここまで↑↑↑
 		///DirectX毎フレーム処理
