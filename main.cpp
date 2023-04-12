@@ -341,6 +341,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+		///////////
+		//4.描画コマンドはここから↓↓↓
+
+
+
+		//描画コマンドはここから↑↑↑
+		///////////
+
+
+		//5.リソースバリアの復帰コマンド
+		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	//描画状態
+		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			//表示状態へ
+		commandList->ResourceBarrier(1, &barrierDesc);
+
 		///ここまで↑↑↑
 		///DirectX毎フレーム処理
 
