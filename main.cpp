@@ -84,17 +84,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	////デバッグレイヤーを有効にする
 	//デバッグレイヤーおよびGPU Validationの有効化
-#ifdef _DEBUG
-//デバッグレイヤーをオンに
+	#ifdef _DEBUG
+	//デバッグレイヤーをオンに
 	ID3D12Debug1* debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
-#endif
+	#endif
 
 	////GPU Validation
-	debugController->SetEnableGPUBasedValidation(TRUE);
+	//debugController->SetEnableGPUBasedValidation(TRUE);
 
 
 
@@ -277,7 +277,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	filter.DenyList.NumSeverities = _countof(severities);
 	filter.DenyList.pSeverityList = severities;
 	//指定したエラーの表示を抑制する
-	infoQueue->PushStorageFilter(&filter);
+	//infoQueue->PushStorageFilter(&filter);
 
 	//ここまで↑↑↑
 	//DirectX初期化処理
