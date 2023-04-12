@@ -367,6 +367,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		result = swapChain->Present(1, 0);
 		assert(SUCCEEDED(result));
 
+		//コマンド完了待ち
+		//コマンドの実行完了を待つ
+		commandQueue->Signal(fence, ++fenceVal);
+		if (fence->GetCompletedValue() != fenceVal) {
+			HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+			fence->SetEventOnCompletion(fenceVal, event);
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+
+		//キューをクリア
+		result = commandAllocator->Reset();
+		assert(SUCCEEDED(result));
+		//再びコマンドリストを貯める準備
+		result = commandList->Reset(commandAllocator, nullptr);
+		assert(SUCCEEDED(result));
 
 
 		///ここまで↑↑↑
